@@ -38,7 +38,16 @@ namespace WpfApp1
         [NotifyCanExecuteChangedFor(nameof(AddNewToDoItemCommand))]
         private string? newToDoText;
 
-        public RelayCommand AddNewToDoItemCommand { get; }
+        [RelayCommand(CanExecute = nameof(CanAddNewToDoItem))]
+        private void AddNewToDoItem()
+        {
+            ToDoListItems?.Add(new ToDoItem(NewToDoText));
+        }
+        private bool CanAddNewToDoItem()
+        {
+            return !string.IsNullOrEmpty(NewToDoText);
+        }
+
         public RelayCommand RemoveToDoItemCommand { get; }
         public RelayCommand UpdateSelectedListCommand { get; }
 
@@ -47,14 +56,8 @@ namespace WpfApp1
             ShowAll = true;
             ToDoListItems = new ObservableCollection<ToDoItem>();
             ToDoListItems?.Add(new ToDoItem("Comleted", true));
-            AddNewToDoItemCommand = new RelayCommand(AddNewToDoItem, () => !string.IsNullOrEmpty(NewToDoText));
             RemoveToDoItemCommand = new RelayCommand(RemoveToDoItem, () => SelectedItem is not null);
             UpdateSelectedListCommand = new RelayCommand(UpdateSelectedList);
-        }
-
-        private void AddNewToDoItem()
-        {
-            ToDoListItems?.Add(new ToDoItem(NewToDoText));
         }
 
         private void RemoveToDoItem()
